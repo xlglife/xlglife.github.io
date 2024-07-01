@@ -43,3 +43,17 @@ jobs:
         # 部署到 gh-pages 分支
         # 使用由 GitHub 自动生成的 ACTION_ACCESS_TOKEN 进行身份验证
         # 将构建后的 ./public 目录中的文件发布到 gh-pages 分支
+
+      - name: Deploy to Server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_PATH: ${{ secrets.SERVER_PATH }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" | ssh-add -
+          ssh-keyscan $SERVER_HOST >> ~/.ssh/known_hosts
+          rsync -avz --delete public/ $SERVER_USER@$SERVER_HOST:$SERVER_PATH
+        # 添加 SSH 私钥到 ssh-agent
+        # 将服务器的主机密钥添加到 known_hosts 文件中
+        # 使用 rsync 将生成的静态文件部署到远程服务器
