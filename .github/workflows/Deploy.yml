@@ -45,15 +45,15 @@ jobs:
         # 将构建后的 ./public 目录中的文件发布到 gh-pages 分支
 
       - name: Deploy to Server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_PATH: ${{ secrets.SERVER_PATH }}
-        run: |
-          echo "$SSH_PRIVATE_KEY" | ssh-add -
-          ssh-keyscan $SERVER_HOST >> ~/.ssh/known_hosts
-          rsync -avz --delete public/ $SERVER_USER@$SERVER_HOST:$SERVER_PATH
-        # 添加 SSH 私钥到 ssh-agent
-        # 将服务器的主机密钥添加到 known_hosts 文件中
-        # 使用 rsync 将生成的静态文件部署到远程服务器
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}  # 或者使用 privateKey
+          script: |
+            cd ${{ secrets.SERVER_PATH }}
+            rm -rf *
+            scp -r ./public/* .
+        # 进入到服务器上指定的部署路径
+        # 删除目标路径下的所有文件和子目录
+        # 使用 scp 命令将本地 Hugo 构建生成的静态网站文件复制到当前目录下
