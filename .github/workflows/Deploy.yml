@@ -43,6 +43,9 @@ jobs:
         # 部署到 gh-pages 分支
         # 使用由 GitHub 自动生成的 ACTION_ACCESS_TOKEN 进行身份验证
         # 将构建后的 ./public 目录中的文件发布到 gh-pages 分支
+      
+      - name: List public directory contents
+        run: ls -la ./public
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
