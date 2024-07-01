@@ -44,9 +44,6 @@ jobs:
         # 使用由 GitHub 自动生成的 ACTION_ACCESS_TOKEN 进行身份验证
         # 将构建后的 ./public 目录中的文件发布到 gh-pages 分支
       
-      - name: List public directory contents
-        run: ls -la ./public
-
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
@@ -56,7 +53,7 @@ jobs:
           script: |
             cd ${{ secrets.SERVER_PATH }}
             rm -rf *
-            scp -r ./public/* .
+            scp -r ./public
         # 进入到服务器上指定的部署路径
         # 删除目标路径下的所有文件和子目录
         # 使用 scp 命令将本地 Hugo 构建生成的静态网站文件复制到当前目录下
