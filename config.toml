@@ -1,81 +1,59 @@
-baseURL = "http://example.org/"
-DefaultContentLanguage = "en" # Theme's display language, supports: en, fr, zh, zh-hant
-languageCode = "en-us"
-title = "A Hugo Site"
-copyright = "This is a customized copyright."
-theme = "diary"
-# googleAnalytics = "UA-123-45"
+DefaultContentLanguage = "zh" # 主题显示语言，支持：en, fr, zh, zh-hant
+baseURL = "https://xlglife.github.io" # 网站的基本URL
+copyright = "浙ICP备2024102625号" # 版权信息
+languageCode = "zh_CN" # 语言代码
+theme = "diary" # 主题名称
+title = "小洛哥开源笔记" # 网站标题
 
-[markup]
-  [markup.highlight]
-    codeFences = true
-    guessSyntax = false
-    hl_Lines = ""
-    lineNoStart = 1
-    lineNos = false
-    lineNumbersInTable = true
-    noClasses = true
-    style = "perldoc"
-    tabWidth = 4
+[taxonomies] #定义内容分类法
+category = "categories" # 目录分类
+tag = "tags" # 标签分类
+
+# googleAnalytics = "UA-123-45"  # Google Analytics 代码
+# googleSiteVerification = "xxxx-xxxx" # Google 网站验证
 
 [params]
-subtitle = "Themed by Diary."
-enableGitalk = false
-enableGiscus = true
+enableAutoDarkMode = true # 自动启动黑暗模式
+enableReadingTime = true # 阅读时间
+subtitle = "Themed by Diary." # 副标题
+# favicon = "Your Favicon Address"
 
-# Microsoft Clarity (https://clarity.microsoft.com/) is a free user behavior recording and analytics tool
-clarity = "abcdefghzd"
+[markup]
+[markup.highlight]
+codeFences = true # 启用代码框（使用 ``` 包围的代码块）
+guessSyntax = false # 不猜测代码的语法
+hl_Lines = "" # 要高亮显示的行，使用逗号分隔
+lineNoStart = 1 # 行号的起始值
+lineNos = false # 是否显示行号
+lineNumbersInTable = true # 行号显示在表格中
+noClasses = true # 不使用 CSS 类（使用内联样式）
+style = "perldoc" # 代码高亮的样式
+tabWidth = 4 # 制表符宽度
 
-# Twitter Card and Open Graph settings
-enableOpenGraph = true
-enableTwitterCards = true
-title = "My Blog" # will set 'og:site_name'
-description = "My HomePage Description"  # will set 'og:description'
+# Twitter Card 和 Open Graph 设置
+description = "My HomePage Description" # 设置 'og:description'
+enableOpenGraph = false # 启用Open Graph
+enableTwitterCards = false # 启用Twitter Card
+title = "小洛哥开源笔记" # 设置 'og:site_name'
 
-[params.gitalk]
-  owner = "user"
-  repo = "repo name"
-  client_id = "your client id"
-  client_secret = "your client secret"
-[taxonomies]
-   tag = "tags"
-   category = "categories"
-
-[params.utterances]
-repo="your repo"
-term="[ENTER TERM HERE]"
-label="your label"
-theme="github-light"
-
-# Please visit https://giscus.app/ to generate settings.
-[params.giscus]
-    data_repo="username/repo"
-    data_repo_id="**************************"    
-    data_category="General"
-    data_category_id="*********************"
-    data_mapping="pathname"
-    data_strict="0"
-    data_reactions_enabled="1"
-    data_emit_metadata="0"
-    data_input_position="bottom"
-    data_theme="preferred_color_scheme"
-    data_lang="en"
-    crossorigin="anonymous"
-
-
+# 自定义导航
 [[menu.main]]
-url = "/categories"
-name = "Categories"
-weight = 2
-[[menu.main]]
-url = "/tags"
-name = "Tags"
-weight = 3
-[[menu.main]]
+name = "归档"
 url = "/posts"
-name = "Archive"
 weight = 1
 [[menu.main]]
+name = "目录"
+url = "/categories"
+weight = 2
+[[menu.main]]
+name = "标签"
+url = "/tags"
+weight = 3
+[[menu.main]]
+name = "RSS"
 url = "/index.xml"
-name = "RSS Feed"
 weight = 4
+[[menu.main]]
+name = "小报童精选"
+url = "https://xiaobots.top"
+weight = 5
