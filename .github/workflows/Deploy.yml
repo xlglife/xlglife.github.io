@@ -13,14 +13,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: true # 确保检出子模块
           fetch-depth: 0    # 获取完整历史记录
         # 检出仓库代码并包含子模块
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2.6.0
+        uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: "latest"
           extended: true
@@ -35,7 +35,7 @@ jobs:
         # 运行 Hugo 命令构建静态网站
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.ACTION_ACCESS_TOKEN }}
           publish_branch: gh-pages
@@ -60,7 +60,7 @@ jobs:
         # 使用 scp 命令将本地 Hugo 构建生成的静态网站文件复制到当前目录下
 
       - name: Server Deploy
-        uses: burnett01/rsync-deployments@5.2
+        uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avzr --delete
           path: ./public
