@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hugo on 小洛哥开源笔记</title>
+    <link>https://xlglife.github.io/categories/hugo/</link>
+    <description>Recent content in Hugo on 小洛哥开源笔记</description>
+    <generator>Hugo</generator>
+    <language>zh_CN</language>
+    <copyright>浙ICP备2024102625号</copyright>
+    <lastBuildDate>Tue, 02 Jul 2024 22:01:58 +0800</lastBuildDate>
+    <atom:link href="https://xlglife.github.io/categories/hugo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 Github Actions 自动部署 Hugo 到仓库和服务器</title>
+      <link>https://xlglife.github.io/posts/%E4%BD%BF%E7%94%A8-github-actions-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2-hugo-%E5%88%B0%E4%BB%93%E5%BA%93%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
+      <pubDate>Tue, 02 Jul 2024 22:01:58 +0800</pubDate>
+      <guid>https://xlglife.github.io/posts/%E4%BD%BF%E7%94%A8-github-actions-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2-hugo-%E5%88%B0%E4%BB%93%E5%BA%93%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
+      <description>为了不在本地电脑上折腾 Hugo，而且本地的 git 也总是出故障，能力有限暂时处理不了。&#xA;所以打算用 Github Actions 自动部署到腾讯云的服务器，同时也可以部署一份到 Github Pages 作为备份。&#xA;这样就能实现我在本地使用任意的 markdown 编辑器写完笔记，将 md 文件上传到 Github 后，就不用管了~&#xA;准备工作 新建 Github 仓库 xlglife.github.io （请自行修改为自己的信息） 创建一个 Github 的 codespace（在线的 VScode，本地 git 坏了没法用） 终端运行 git submodule add https://github.com/AmazingRise/hugo-theme-diary.git themes/diary 安装主题 （以 diary 主题为例） 从 这里 下载 exampleSite 文件覆盖根目录 这样 Hugo 程序的源文件就上传好了 部署到 Github Pages 首先在 这里 生成一个 Github Token（repo 权限） 在仓库的 Settings → Secrets and variables → Actions 中添加一个 Secret Name 填入 ACTION_ACCESS_TOKEN Secret 填入刚才生成的 Token 在仓库的 Settings → Pages → Build and deployment 里选择 Source 选择 Deploy from a branch Branch 选择 gh-pages 记得勾选下面的 Enforce HTTPS 最后一步，在仓库根目录下创建文件 .</description>
+    </item>
+  </channel>
+</rss>

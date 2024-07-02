@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html><head>
+<title>使用 Github Actions 自动部署 Hugo 到仓库和服务器</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="为了不在本地电脑上折腾 Hugo，而且本地的 git 也总是出故障，能力有限暂时处理不了。所以打算用 Github Actions 自动部署到腾讯云的服务器，同时也可以部署一份到 Github Pages 作为备份。这样就能实现我在本地使用任意的 markdown 编辑器写完笔记，将 md 文件上传到 Github 后，就不用管了~">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>console.log("Hello from 'layouts/partials/extended_head.html'")</script>
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
+                    归档
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    目录
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    标签
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/index.xml">
+                    RSS
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="https://xiaobots.top">
+                    小报童精选
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" class="nav-准备工作">
+									准备工作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%83%a8%e7%bd%b2%e5%88%b0-github-pages" class="nav-部署到-github-pages">
+									部署到 Github Pages
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%83%a8%e7%bd%b2%e5%88%b0%e6%9c%8d%e5%8a%a1%e5%99%a8" class="nav-部署到服务器">
+									部署到服务器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a1%a5%e5%85%85%e8%af%b4%e6%98%8e" class="nav-补充说明">
+									补充说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e8%80%83%e8%b5%84%e6%96%99" class="nav-参考资料">
+									参考资料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://xlglife.github.io/">
+            小洛哥开源笔记
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://xlglife.github.io/">
+        <div class="single-column-header-title">小洛哥开源笔记</div>
+        
+        <div class="single-column-header-subtitle">人生没有白走的路,每一步都算数。</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3wzNjAwOTd8MHwxfHNlYXJjaHwyfHxnaXRodWJ8ZW58MHx8fHwxNzE5OTUxMzI0fDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080')"
+                    
+                
+            >
+                <div class="post-title">
+                    使用 Github Actions 自动部署 Hugo 到仓库和服务器
+                    
+                    <div class="post-subtitle">
+                        为了不在本地电脑上折腾 Hugo，而且本地的 git 也总是出故障，能力有限暂时处理不了。所以打算用 Github Actions 自动部署到腾讯云的服务器，同时也可以部署一份到 Github Pages 作为备份。这样就能实现我在本地使用任意的 markdown 编辑器写完笔记，将 md 文件上传到 Github 后，就不用管了~
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2024-07-02 22:01
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/hugo">Hugo</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/hugo">Hugo</a>
+                                &nbsp;
+                            
+                                <a href="/tags/github">Github</a>
+                                &nbsp;
+                            
+                        
+                        
+                            <i class="material-icons" style="">schedule</i>
+                            
+
+                            
+                            
+
+                            
+                            5 min
+                            
+                            27 s.
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p>为了不在本地电脑上折腾 Hugo，而且本地的 git 也总是出故障，能力有限暂时处理不了。</p>
+<p>所以打算用 Github Actions 自动部署到腾讯云的服务器，同时也可以部署一份到 Github Pages 作为备份。</p>
+<p>这样就能实现我在本地使用任意的 markdown 编辑器写完笔记，将 md 文件上传到 Github 后，就不用管了~</p>
+<h2 id="准备工作">准备工作</h2>
+<ol>
+<li>新建 Github 仓库 <code>xlglife.github.io</code> （请自行修改为自己的信息）</li>
+<li>创建一个 Github 的 <code>codespace</code>（在线的 VScode，本地 git 坏了没法用）</li>
+<li>终端运行 <code>git submodule add https://github.com/AmazingRise/hugo-theme-diary.git themes/diary</code> 安装主题 （以 <code>diary</code> 主题为例）</li>
+<li>从 <a href="https://github.com/AmazingRise/hugo-theme-diary/tree/main/exampleSite">这里</a> 下载 <code>exampleSite</code> 文件覆盖根目录</li>
+</ol>
+<p>这样 Hugo 程序的源文件就上传好了
+<img src="http://img.xlg.life/images%2F2024%2F07%2F03%2F20240703021259-e802d03d9a08209558e75408ac105182.png" alt=""></p>
+<h2 id="部署到-github-pages">部署到 Github Pages</h2>
+<ol>
+<li>首先在 <a href="https://github.com/settings/tokens">这里</a> 生成一个 Github Token（repo 权限）</li>
+<li>在仓库的 <code>Settings</code> → <code>Secrets and variables</code> → <code>Actions</code> 中添加一个 <code>Secret</code>
+<ol>
+<li>Name 填入 <code>ACTION_ACCESS_TOKEN</code></li>
+<li>Secret 填入刚才生成的 Token</li>
+</ol>
+</li>
+<li>在仓库的 <code>Settings</code> → <code>Pages</code> → <code>Build and deployment</code> 里选择
+<ol>
+<li>Source 选择 <code>Deploy from a branch</code></li>
+<li>Branch 选择 <code>gh-pages</code></li>
+<li>记得勾选下面的 <code>Enforce HTTPS</code></li>
+</ol>
+</li>
+<li>最后一步，在仓库根目录下创建文件 <code>.github/workflows/Deploy.yml</code>，内容写入：</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build and Deploy</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">branches</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">main</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 当推送到 main 分支时触发</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">build-deploy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 运行在最新版本的 Ubuntu 上</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Checkout</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v4</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span> <span style="color:#75715e"># 确保检出子模块</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">fetch-depth</span>: <span style="color:#ae81ff">0</span>    <span style="color:#75715e"># 获取完整历史记录</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 检出仓库代码并包含子模块</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Setup Hugo</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-hugo@v3</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">hugo-version</span>: <span style="color:#e6db74">&#34;latest&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">extended</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 设置 Hugo，安装最新版本的 Hugo 扩展版</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Update submodules</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">git submodule update --init --recursive</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 初始化并更新子模块</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">hugo</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 运行 Hugo 命令构建静态网站</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy to GitHub Pages</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-gh-pages@v4</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">github_token</span>: <span style="color:#ae81ff">${{ secrets.ACTION_ACCESS_TOKEN }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">publish_branch</span>: <span style="color:#ae81ff">gh-pages</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">publish_dir</span>: <span style="color:#ae81ff">./public</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 部署到 gh-pages 分支</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 使用由 GitHub 自动生成的 ACTION_ACCESS_TOKEN 进行身份验证</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 将构建后的 ./public 目录中的文件发布到 gh-pages 分支</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>保存提交，然后等待部署完成后，就可以访问 <a href="https://xlglife.github.io">https://xlglife.github.io</a> 看看了</p>
+<h2 id="部署到服务器">部署到服务器</h2>
+<ol>
+<li>ssh 登录到服务器，输入命令 <code>ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;</code>（改成自己的邮箱）</li>
+<li>一路默认回车后，就可以在 <code>~/.ssh</code> 目录下看到 <code>id_rsa</code>（私钥）和 <code>id_rsa.pub</code>（公钥）</li>
+<li>首先将公钥里的内容，复制到 <code>~/.ssh/authorized_keys</code> 文件中</li>
+<li>然后回到 Github 仓库，添加如下 <code>Secret</code>
+<ol>
+<li><code>SERVER_PATH</code>，服务器上存储静态资源的路径</li>
+<li><code>SERVER_HOST</code>，服务器 IP 地址</li>
+<li><code>SERVER_PORT</code>，服务器 ssh 端口，一般为 22</li>
+<li><code>SERVER_USER</code>，服务器 ssh 用户</li>
+<li><code>SERVER_KEY</code>，前面生成的私钥内容填入这里</li>
+</ol>
+</li>
+<li>在 <code>.github/workflows/Deploy.yml</code> 后面补充：</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy to Server</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">burnett01/rsync-deployments@7.0.1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">switches</span>: -<span style="color:#ae81ff">avzr --delete</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">path</span>: <span style="color:#ae81ff">./public</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">remote_path</span>: <span style="color:#ae81ff">${{ secrets.SERVER_PATH }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">remote_host</span>: <span style="color:#ae81ff">${{ secrets.SERVER_HOST }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">remote_port</span>: <span style="color:#ae81ff">${{ secrets.SERVER_PORT }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">remote_user</span>: <span style="color:#ae81ff">${{ secrets.SERVER_USER }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">remote_key</span>: <span style="color:#ae81ff">${{ secrets.SERVER_KEY }}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 通过 ssh 连接服务器，用 rsync 同步文件</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 服务器信息通过 GitHub Secrets 设置</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>再次保存提交，等待部署完成，就可以访问服务器上的网址了 <a href="https://xlg.life">https://xlg.life</a></p>
+<h2 id="补充说明">补充说明</h2>
+<p>其实部署到 Github 仓库和服务器，主要是最后一步的 Deploy 不同，我看来很多人写的不同的 Actions 命令，基本上部署到 Github Pages 都是用的 <code>peaceiris/actions-gh-pages</code>，而部署到服务器的确是有很多种方法，在这里我也被 ssh key 这个坑阻挠了好久，最终找到了 <code>burnett01/rsync-deployments</code> 才搞定。</p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://github.com/actions/checkout">GitHub - actions/checkout: Action for checking out a repo</a></li>
+<li><a href="https://github.com/peaceiris/actions-hugo">GitHub - peaceiris/actions-hugo: GitHub Actions for Hugo ⚡️ Setup Hugo quickly and build your site fast. Hugo extended, Hugo Modules, Linux (Ubuntu), macOS, and Windows are supported.</a></li>
+<li><a href="https://github.com/peaceiris/actions-gh-pages">GitHub - peaceiris/actions-gh-pages: GitHub Actions for GitHub Pages 🚀 Deploy static files and publish your site easily. Static-Site-Generators-friendly.</a></li>
+<li><a href="https://github.com/burnett01/rsync-deployments">GitHub - Burnett01/rsync-deployments: GitHub Action for deploying code via rsync over ssh</a></li>
+<li><a href="https://yukimio.world/p/hugo-deploy-2307-zh/">使用 git action 自动部署 blog</a></li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">最后修改于 2024-07-02</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下回<br>已经到头啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/posts/chinese/">
+			上回<br>中文文本测试
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://xlglife.github.io/">
+    
+        <div class="nav-title">
+            小洛哥开源笔记
+        </div>
+        
+        <div class="nav-subtitle">
+            人生没有白走的路,每一步都算数。
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/posts">
+                归档
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                目录
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                标签
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/index.xml">
+                RSS
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="https://xiaobots.top">
+                小报童精选
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	浙ICP备2024102625号
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" class="nav-准备工作">
+									准备工作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%83%a8%e7%bd%b2%e5%88%b0-github-pages" class="nav-部署到-github-pages">
+									部署到 Github Pages
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%83%a8%e7%bd%b2%e5%88%b0%e6%9c%8d%e5%8a%a1%e5%99%a8" class="nav-部署到服务器">
+									部署到服务器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a1%a5%e5%85%85%e8%af%b4%e6%98%8e" class="nav-补充说明">
+									补充说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e8%80%83%e8%b5%84%e6%96%99" class="nav-参考资料">
+									参考资料
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	浙ICP备2024102625号
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>
