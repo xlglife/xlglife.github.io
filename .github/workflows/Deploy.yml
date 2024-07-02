@@ -54,7 +54,7 @@ jobs:
           script: |
             cd ${{ secrets.SERVER_PATH }}
             rm -rf *
-            scp -r ./public/. ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+            scp -r ./public ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
         # 进入到服务器上指定的部署路径
         # 删除目标路径下的所有文件和子目录
         # 使用 scp 命令将本地 Hugo 构建生成的静态网站文件复制到当前目录下
