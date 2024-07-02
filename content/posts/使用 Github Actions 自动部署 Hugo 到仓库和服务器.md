@@ -9,8 +9,7 @@ share: true
 date: 2024-07-02T22:01:58+08:00
 title: 使用 Github Actions 自动部署 Hugo 到仓库和服务器
 description: 为了不在本地电脑上折腾 Hugo，而且本地的 git 也总是出故障，能力有限暂时处理不了。所以打算用 Github Actions 自动部署到腾讯云的服务器，同时也可以部署一份到 Github Pages 作为备份。这样就能实现我在本地使用任意的 markdown 编辑器写完笔记，将 md 文件上传到 Github 后，就不用管了~
-categories:
-  - Hugo
+categories: Hugo
 tags:
   - Hugo
   - Github
