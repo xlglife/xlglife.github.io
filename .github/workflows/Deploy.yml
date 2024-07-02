@@ -49,7 +49,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}  # 或者使用 privateKey
+          key: ${{ secrets.SERVER_KEY }} 
           port: ${{ secrets.SERVER_PORT }}  # 使用 SERVER_PORT 变量来指定端口号
           script: |
             cd ${{ secrets.SERVER_PATH }}
