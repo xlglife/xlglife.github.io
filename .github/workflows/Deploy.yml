@@ -34,12 +34,12 @@ jobs:
         run: hugo
         # 运行 Hugo 命令构建静态网站
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.ACTION_ACCESS_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./public
+      #- name: Deploy to GitHub Pages
+      #  uses: peaceiris/actions-gh-pages@v3
+      #  with:
+      #    github_token: ${{ secrets.ACTION_ACCESS_TOKEN }}
+      #    publish_branch: gh-pages
+      #    publish_dir: ./public
         # 部署到 gh-pages 分支
         # 使用由 GitHub 自动生成的 ACTION_ACCESS_TOKEN 进行身份验证
         # 将构建后的 ./public 目录中的文件发布到 gh-pages 分支
