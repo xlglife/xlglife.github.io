@@ -52,9 +52,9 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./public/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          dangerous-clean-slate: true
+          dangerous-clean-slate: true # 在部署文件前清空服务器目录
           log-level: verbose # 启用详细日志
         # 通过 FTP 部署到服务器
         # 使用 secrets 变量来存储私密信息
         # 将 ./public 目录中的文件上传到服务器上的指定路径
-        # 在部署文件前清空服务器目录
+        
