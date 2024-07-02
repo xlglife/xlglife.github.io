@@ -15,7 +15,7 @@ tag = "tags" # 标签分类
 [params]
 enableAutoDarkMode = true # 自动启动黑暗模式
 enableReadingTime = true # 阅读时间
-subtitle = "人生没有白走的路,每一步都算数。" # 副标题
+subtitle = "人生没有白走的路,每一步都算数" # 副标题
 # favicon = "Your Favicon Address"
 
 [markup]
