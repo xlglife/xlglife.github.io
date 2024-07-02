@@ -8,7 +8,6 @@ title = "小洛哥开源笔记" # 网站标题
 [taxonomies] #定义内容分类法
 category = "categories" # 目录分类
 tag = "tags" # 标签分类
-series = "series"
 
 # googleAnalytics = "UA-123-45"  # Google Analytics 代码
 # googleSiteVerification = "xxxx-xxxx" # Google 网站验证
@@ -58,8 +57,4 @@ weight = 4
 name = "小报童精选"
 url = "https://xiaobots.top"
 weight = 5
-[[menu.main]]
-name = "系列"
-url = "/series"
-weight = 6
 
