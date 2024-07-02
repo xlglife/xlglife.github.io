@@ -54,7 +54,6 @@ jobs:
           script: |
             cd ${{ secrets.SERVER_PATH }}
             rm -rf *
-            scp -o StrictHostKeyChecking=no -r ./public/. ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
             scp -r ./public/. ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
         # 进入到服务器上指定的部署路径
         # 删除目标路径下的所有文件和子目录
