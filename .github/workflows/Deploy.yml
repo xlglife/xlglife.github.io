@@ -44,17 +44,19 @@ jobs:
         # 使用由 GitHub 自动生成的 ACTION_ACCESS_TOKEN 进行身份验证
         # 将构建后的 ./public 目录中的文件发布到 gh-pages 分支
       
-      - name: Deploy to FTP Server
-        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./public/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          dangerous-clean-slate: true
-        # 通过 FTP 部署到服务器
-        # 在部署文件前清空服务器目录
-        # 使用 secrets 变量来存储私密信息
-        # 将 ./public 目录中的文件上传到服务器上的指定路径
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}  # 或者使用 privateKey
+          port: ${{ secrets.SERVER_PORT }}  # 使用 SERVER_PORT 变量来指定端口号
+          script: |
+            cd ${{ secrets.SERVER_PATH }}
+            rm -rf *
+            scp -o StrictHostKeyChecking=no -r ./public/. ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+            scp -r ./public/. ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+        # 进入到服务器上指定的部署路径
+        # 删除目标路径下的所有文件和子目录
+        # 使用 scp 命令将本地 Hugo 构建生成的静态网站文件复制到当前目录下
         
