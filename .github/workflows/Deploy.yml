@@ -50,7 +50,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./public
+          local-dir: ./public/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
         # 通过 FTP 部署到服务器
         # 使用 secrets 变量来存储私密信息
