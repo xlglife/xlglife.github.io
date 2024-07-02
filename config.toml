@@ -15,19 +15,19 @@ tag = "tags" # 标签分类
 [params]
 enableAutoDarkMode = true # 自动启动黑暗模式
 enableReadingTime = true # 阅读时间
-subtitle = "Themed by Diary." # 副标题
+subtitle = "人生没有白走的路,每一步都算数。" # 副标题
 # favicon = "Your Favicon Address"
 
 [markup]
 [markup.highlight]
 codeFences = true # 启用代码框（使用 ``` 包围的代码块）
-guessSyntax = false # 不猜测代码的语法
+guessSyntax = true # 猜测代码的语法
 hl_Lines = "" # 要高亮显示的行，使用逗号分隔
 lineNoStart = 1 # 行号的起始值
-lineNos = false # 是否显示行号
+lineNos = true # 是否显示行号
 lineNumbersInTable = true # 行号显示在表格中
 noClasses = true # 不使用 CSS 类（使用内联样式）
-style = "perldoc" # 代码高亮的样式
+style = "monokai" # 代码高亮的样式
 tabWidth = 4 # 制表符宽度
 
 # Twitter Card 和 Open Graph 设置
