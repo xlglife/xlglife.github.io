@@ -34,28 +34,41 @@ jobs:
         run: hugo
         # 运行 Hugo 命令构建静态网站
 
-      #- name: Deploy to GitHub Pages
-      #  uses: peaceiris/actions-gh-pages@v3
-      #  with:
-      #    github_token: ${{ secrets.ACTION_ACCESS_TOKEN }}
-      #    publish_branch: gh-pages
-      #    publish_dir: ./public
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.ACTION_ACCESS_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./public
         # 部署到 gh-pages 分支
         # 使用由 GitHub 自动生成的 ACTION_ACCESS_TOKEN 进行身份验证
         # 将构建后的 ./public 目录中的文件发布到 gh-pages 分支
       
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_KEY }} 
-          port: ${{ secrets.SERVER_PORT }}  # 使用 SERVER_PORT 变量来指定端口号
-          script: |
-            cd ${{ secrets.SERVER_PATH }}
-            rm -rf *
-            scp -r ./public ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+      #- name: Deploy to Server
+      #  uses: appleboy/ssh-action@master
+      #  with:
+      #    host: ${{ secrets.SERVER_HOST }}
+      #    username: ${{ secrets.SERVER_USERNAME }}
+      #    key: ${{ secrets.SERVER_KEY }} 
+      #    port: ${{ secrets.SERVER_PORT }}  # 使用 SERVER_PORT 变量来指定端口号
+      #    script: |
+      #      cd ${{ secrets.SERVER_PATH }}
+      #      rm -rf *
+      #      scp -r ./public ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
         # 进入到服务器上指定的部署路径
         # 删除目标路径下的所有文件和子目录
         # 使用 scp 命令将本地 Hugo 构建生成的静态网站文件复制到当前目录下
+
+      - name: Server Deploy
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -avzr --delete
+          path: ./public
+          remote_path: /www/wwwroot/xlg.life/ # 最好先在远程主机创建该目录
+          remote_host: ${{ secrets.SERVER_HOST }} # 远程主机 IP
+          remote_port: ${{ secrets.SERVER_PORT }} # ssh 端口，默认为 22
+          remote_user: ${{ secrets.SERVER_USERNAME }} # ssh user
+          remote_key: ${{ secrets.SERVER_KEY }} # ssh 私钥
+
+      
         
