@@ -4,7 +4,6 @@ updated: 2024-07-03
 type: Notes
 status: 📥 收集箱
 Rating: 
-dg-publish: false
 share: true
 date: 2024-07-02T22:01:58+08:00
 title: 使用 Github Actions 自动部署 Hugo 到仓库和服务器
